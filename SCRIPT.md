@@ -10,7 +10,7 @@ Hello future presenter (probably me)! This is the full walk-through script for t
 - Act 0, Gathering the Party: 10 minutes
 - Act I, The Map: 14 minutes
 - Act II, The Three Realms: 34 minutes
-- *(short break, 8 minutes)*
+- *(short rest, 8 minutes)*
 - Act III, Provisions: 15 minutes
 - Act IV, The Kingdom of the Hub: 25 minutes
 - Act V, Your Own Quest: 15 minutes
@@ -161,13 +161,17 @@ Let's zoom out and put the realms together, because their relationship is beauti
 
 So here is the encouraging bottom line: learn IRIS, the ground floor, and you have learned the foundation the other two are built on. You are not behind. You are exactly where you should be.
 
-> **Make camp!** This is the natural halfway point of our journey. Rest for eight minutes, stretch your legs, refill your waterskin (or your coffee), and return for the part where we tour a real kingdom raised on everything we just learned.
+### Slide 22 - Intermission: make camp for a short rest
+
+> **Make camp!** This is the natural halfway point of our journey. Time for a short rest, about eight minutes: stretch your legs, refill your waterskin (or your coffee), and return for the part where we tour a real kingdom raised on everything we just learned.
+
+Bring the deck to this slide before you step away, so the screen itself becomes the cue. It tells everyone the party regroups in eight minutes, so nobody has to wonder how long they have. Take a short rest yourself too, you have earned it.
 
 ---
 
 ## Act III - Provisions
 
-### Slide 22 - Skill Check: History (recall after the break)
+### Slide 23 - Skill Check: History (recall after the break)
 
 Welcome back, travelers! Before we gather our provisions, a quick History check, which in our world means recalling something you already learned. Right before the break, we walked the IRIS node pipeline together. Here is the question: of all those steps, which single node is the one that actually calls the model to reason and use tools?
 
@@ -176,13 +180,13 @@ Welcome back, travelers! Before we gather our provisions, a quick History check,
 It is react_agent! That is the star of the whole pipeline, the only node that talks to the LLM and decides when to reach for a tool. Every other node just preps the input or tidies up the output. Hold that thought close, because in Act Four you are going to watch the Hub splice its own two nodes in right around react_agent.
 
 
-### Slide 23 - What does it take to run?
+### Slide 24 - What does it take to run?
 
 Welcome back, travelers, rested and ready! Before we tour the Hub, let's answer the practical question hiding in every pack: what does it actually take to run this thing? Happily, far less than you fear.
 
 One provider key is enough. A single OPENAI_API_KEY and you are moving. You do not need a database at all, because if you have not configured one, the memory quietly falls back to storing conversations in memory for the session. You only add a real database like Postgres later, when you want conversations to survive a restart. So the barrier to your first run is genuinely tiny.
 
-### Slide 24 - Two ways to carry the library
+### Slide 25 - Two ways to carry the library
 
 There are two ways to bring the library into your project. The first is to just use it: you pip install it straight from our GitHub, pinned to a specific version so it never changes underneath you. Your app simply depends on it.
 
@@ -192,13 +196,13 @@ The second is for when you want to hack on the library itself. That is called ed
 
 ## Act IV - The Kingdom of the Hub
 
-### Slide 25 - A real kingdom on the library
+### Slide 26 - A real kingdom on the library
 
 At last we reach the great kingdom, the moment our whole journey has been climbing toward. The Sustainability Hub Engine is a full, real, deployed application raised on top of bili-core, and I want to show you exactly how it turns this library into a living, running product.
 
 It does two things, and the difference between them is the whole lesson. It uses bili-core's pieces, and it extends them with its own, and it does all of that without ever forking or copying the library. Let's see how.
 
-### Slide 26 - Skill Check: Insight (which realms?)
+### Slide 27 - Skill Check: Insight (which realms?)
 
 Third and final skill check, a test of Insight! The Hub is a chatbot app. Of our three realms, IRIS, AETHER, and AEGIS, which ones do you think it actually imports and calls upon? Take a real guess. Many an adventurer assumes a serious kingdom must wield every enchanted blade in the armory.
 
@@ -206,25 +210,25 @@ Third and final skill check, a test of Insight! The Hub is a chatbot app. Of our
 
 Only IRIS! The Hub touches iris, plus auth and utils for support, and zero lines of aether or aegis. This is such an important lesson. A single, well built agent is all a production chatbot needs. The frontier realms are there for when research calls for them, but you do not have to use everything a library offers. Restraint is a design skill.
 
-### Slide 27 - The golden rule: extend, don't modify
+### Slide 28 - The golden rule: extend, don't modify
 
 So how does the Hub add its own features without touching the library? With one golden rule: the library owns the data, and the app owns the behavior.
 
 Here is the concrete example. The title and tags fields, the little labels on each conversation, live on bili-core's shared State, because any app might want a title. But how the Hub decides on a title, the actual logic, is the Hub's own business, so that lives in the Hub. Generic data down in the library, specific behavior up in the app. If you remember one design idea from today, make it this one, because it explains the entire structure.
 
-### Slide 28 - The Hub adds two nodes of its own
+### Slide 29 - The Hub adds two nodes of its own
 
 In practice, the Hub adds two custom nodes. One called compute_title, which names the chat from your first message. And one called update_tags, which pulls out topic tags every few messages.
 
 And watch how gently it does this. It copies bili-core's default pipeline and splices its two nodes in. It never mutates the shared original, so no other kingdom is affected. And look at the code on the right: a custom node is literally just bili-core's own Node class with the Hub's function tucked inside. If you have seen a factory function, a function that builds and returns another thing, that is exactly this. The Hub is not reinventing anything; it is filling in a blank the library left for it.
 
-### Slide 29 - The Hub's assembled pipeline
+### Slide 30 - The Hub's assembled pipeline
 
 And here is the payoff I promised you back in Act Two. This is the Hub's actual running pipeline. It is the same IRIS backbone you already learned, with the two Hub nodes, marked with stars, woven right in. compute_title slots in just before the agent thinks, and update_tags just after.
 
 At the bottom you can see how it is done in one line: it merges the library's nodes and the Hub's nodes into one registry. Library nodes and Hub nodes, side by side, in one pipeline. You now fully understand a piece of real, deployed production code. That is a big deal, and you should feel good about it.
 
-### Slide 30 - The Hub brings its own tools (RAG)
+### Slide 31 - The Hub brings its own tools (RAG)
 
 We just watched the Hub add its own nodes. Here is the second way it extends the library: it also brings its own tools. Remember, in IRIS a tool is simply something the agent can reach for, like a weather lookup. The Hub's headline tool is called knowledge_search, and it is a real piece of something you have very likely heard of, RAG.
 
@@ -232,13 +236,13 @@ RAG stands for Retrieval-Augmented Generation, and the plain-language version is
 
 And here is the lovely connection back to everything we learned. IRIS gives you the single agent, and the library even ships the hooks for this, an embeddings loader and retriever tools. Add a retriever tool, point it at your documents, and you have built RAG. The library provides the machinery, the Hub supplies the documents. That is the extend-don't-modify rule, one more time.
 
-### Slide 31 - Three gates into the kingdom
+### Slide 32 - Three gates into the kingdom
 
 A quick tour of how people actually reach the Hub. There are three gates. Streamlit, a quick user interface that mostly reuses bili-core's prebuilt pages. Flask, a REST API that handles auth and data. And WebSocket, the real time chat, which is where the full agent gets built.
 
 On the right is a WebSocket message's whole journey: check that your login is valid and that the conversation is actually yours, build the agent graph with that spliced pipeline, run it, let the checkpointer save everything automatically, and stream the reply back with its fresh title and tags. Every concept on that list is one we met today. It all connects.
 
-### Slide 32 - One security idea worth stealing
+### Slide 33 - One security idea worth stealing
 
 Before we send you off, one security idea so clean I want you to steal it. Every conversation's key is your email, then an underscore, then the conversation id. And before the Hub ever loads a thread, it checks that the key starts with your email.
 
@@ -248,19 +252,19 @@ That means you simply cannot open someone else's conversation by guessing an id,
 
 ## Act V - Your Own Quest
 
-### Slide 33 - Choose your path
+### Slide 34 - Choose your path
 
 Here is your reward for braving the whole journey: a take home scroll, a markdown file called FORK-YOUR-OWN-CHATBOT, and it branches at a fork in the road, because every good quest does.
 
 The Path of the Scribe is the gentle one: build a plain chatbot with a personality you invent. Start here, truly, no shame in the easy road. The Path of the Artificer is a step bolder: hand your bot an actual tool, like weather or search, so it can act upon the world and not just speak. Both paths set out from that same four line skeleton you already met, so you are not starting from an empty map. You are starting from ground you already know.
 
-### Slide 34 - Your first spell, in full
+### Slide 35 - Your first spell, in full
 
 And here it is, your first complete spell. It is the four line skeleton, just fleshed out a little: load a model, take no tools for now, build the agent with a persona (I made mine a wise tavern keeper, you should make yours something delightful), and then speak to it.
 
 The scroll walks you through every single line, and it honestly warns you about the one little snag you might hit, so you will not get stuck alone. One API key, a few minutes, and you will be talking to something you built. I cannot wait to see what personalities you all come up with.
 
-### Slide 35 - Experience earned
+### Slide 36 - Experience earned
 
 And so our quest comes to its end! Look at all the experience your party earned today. You can read the bili-core map. You have walked the three realms. You watched IRIS become a chatbot before your eyes. You understand how the Hub extends the library without ever breaking it. You carry a scroll to forge your own. And you know now, deep in your bones, to trust the code.
 
