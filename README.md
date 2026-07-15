@@ -1,6 +1,6 @@
 # ⚔️📜 The bili-core Quest
 
-A workshop that takes computer science students on a Dungeons-and-Dragons-flavored journey through **bili-core**, the open-source library that powers the MSU Denver Sustainability Hub. Students leave with a map of the library's architecture, a tour of how a real app is built on it, and a take-home scroll for forking it to build a chatbot of their own.
+A workshop that takes computer science students on a Dungeons-and-Dragons-flavored journey through **[bili-core](https://github.com/msu-denver/bili-core)**, the open-source library that powers the MSU Denver Sustainability Hub. Students leave with a map of the library's architecture, a tour of how a real app is built on it, and a take-home scroll for forking it to build a chatbot of their own.
 
 Built for an audience with fundamental CS knowledge (and no assumed experience with LLM frameworks). Runs about two hours.
 
@@ -21,7 +21,7 @@ Built for an audience with fundamental CS knowledge (and no assumed experience w
 3. Navigate with **→ / Space** (forward) and **←** (back). Some slides reveal bullet points one at a time.
 4. Press **?** any time for the full list of controls.
 
-**Three interactive "skill check" slides** (Perception, Arcana, Insight) have a golden button. Ask the room to guess *before* you click it, that pause is where the engagement lives.
+**Three interactive "skill check" slides** (Arcana, History, Insight) have a golden button. Ask the room to guess *before* you click it, that pause is where the engagement lives.
 
 **Rehearsing?** Keep `SCRIPT.md` open beside you.
 
@@ -45,7 +45,7 @@ The included `.nojekyll` file tells Pages to serve the files directly without ex
 
 ## A note on accuracy
 
-The content is grounded from working knowledge of C3-lab Technical Proejct Manager, @chillyssa and her familiar, Claude's deep read of the actual bili-core and Sustainability Hub Engine codebases.
+The content is grounded from working knowledge of C3-lab Technical Project Manager, [@chillyssa](https://github.com/chillyssa) and her familiar, Claude's deep read of the actual bili-core and Sustainability Hub Engine codebases.
 
 ## Credits
 
