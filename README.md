@@ -4,6 +4,8 @@ A workshop that takes computer science students on a Dungeons-and-Dragons-flavor
 
 Built for an audience with fundamental CS knowledge (and no assumed experience with LLM frameworks). Runs about two hours.
 
+**Live deck:** https://msu-denver.github.io/bili-core-quest/
+
 ## What's in this repo
 
 | File | What it is |
@@ -49,4 +51,4 @@ The content is grounded from working knowledge of C3-lab Technical Project Manag
 
 ## Credits
 
-Created for the MSU Denver Sustainability Hub team. bili-core, IRIS, AETHER, and AEGIS are the work of MSU Denver students and researchers.
+Created for the MSU Denver Sustainability Hub team. [bili-core](https://github.com/msu-denver/bili-core), IRIS, AETHER, and AEGIS are the work of MSU Denver students and researchers.
