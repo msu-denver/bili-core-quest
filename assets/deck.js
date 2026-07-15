@@ -103,9 +103,15 @@
 
   function toggleHelp() { document.getElementById("help").classList.toggle("on"); }
 
-  // ---- Scale the fixed 1280x720 canvas to fit any screen, staying centered ----
+  // ---- Scale the fixed 1280x720 canvas to fit any screen ----
+  // Reserve a strip at the bottom for the footer and center the slide in the
+  // space *above* it, so a short (non-fullscreen) window never lets the slide
+  // overlap the footer chrome.
   function fit() {
-    var scale = Math.min(window.innerWidth / 1280, window.innerHeight / 720) * 0.96;
+    var RESERVE = 52; // px kept clear at the bottom for the footer
+    var avail = Math.max(240, window.innerHeight - RESERVE);
+    var scale = Math.min(window.innerWidth / 1280, avail / 720) * 0.96;
+    stage.style.top = (avail / 2) + "px";
     stage.style.transform = "translate(-50%, -50%) scale(" + scale + ")";
   }
   window.addEventListener("resize", fit);
