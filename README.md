@@ -45,7 +45,7 @@ The included `.nojekyll` file tells Pages to serve the files directly without ex
 
 ## A note on accuracy
 
-The content is grounded in a deep read of the actual bili-core and Sustainability Hub Engine codebases. Where the library's own docs and its code disagreed, the deck follows the code, which is, fittingly, one of the lessons the workshop teaches.
+The content is grounded from working knowledge of C3-lab Technical Proejct Manager, @chillyssa and her familiar, Claude's deep read of the actual bili-core and Sustainability Hub Engine codebases.
 
 ## Credits
 
