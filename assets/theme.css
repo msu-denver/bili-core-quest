@@ -1,0 +1,307 @@
+/* =============================================================================
+   The bili-core Quest - theme.css
+   A candlelit-tavern / D&D campaign look for the workshop deck.
+   Zero external assets: all texture is CSS gradients, all fonts are system
+   stacks, so the deck renders identically offline and on GitHub Pages.
+   ============================================================================= */
+
+:root {
+  /* Parchment & ink palette */
+  --ink:        #2b1d10;   /* deep brown-black text */
+  --parchment:  #f2e3c4;   /* aged paper */
+  --parchment-2:#e7d3a6;   /* paper shadow */
+  --tavern:     #1a1206;   /* dark backdrop (candlelit wood) */
+  --tavern-2:   #2a1c0c;
+  --gold:       #c9962c;   /* torchlight gold */
+  --gold-bright:#f0c34e;
+  --ember:      #b5471f;   /* ember red-orange */
+  --moss:       #5a7a3c;   /* success / XP green */
+  --arcane:     #6b4c9a;   /* magic purple (AETHER) */
+  --steel:      #4a6b7a;   /* AEGIS steel blue */
+
+  --serif-display: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+  --serif-body:    "Iowan Old Style", Georgia, "Times New Roman", serif;
+  --mono:          "SF Mono", "JetBrains Mono", "Fira Code", Menlo, Consolas, monospace;
+
+  --slide-w: 1280px;
+  --slide-h: 720px;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  height: 100%;
+  background:
+    radial-gradient(ellipse at 50% -10%, #3a2810 0%, var(--tavern-2) 45%, var(--tavern) 100%);
+  color: var(--ink);
+  font-family: var(--serif-body);
+  overflow: hidden;
+}
+
+/* ---- Deck stage: a fixed 1280x720 canvas pinned to the viewport center,
+       then scaled as one unit so slides never drift off-screen ---- */
+#stage {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  width: var(--slide-w);
+  height: var(--slide-h);
+  transform: translate(-50%, -50%);
+  transform-origin: center center;
+}
+#deck { position: absolute; inset: 0; }
+
+.slide {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: var(--slide-w);
+  height: var(--slide-h);
+  padding: 64px 84px;
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  /* Parchment card */
+  background:
+    linear-gradient(135deg, rgba(255,255,255,.10), rgba(0,0,0,.06)),
+    radial-gradient(120% 140% at 20% 0%, var(--parchment) 0%, var(--parchment-2) 100%);
+  border-radius: 10px;
+  box-shadow:
+    0 0 0 2px rgba(201,150,44,.55),
+    0 0 0 10px rgba(20,12,4,.85),
+    0 26px 70px rgba(0,0,0,.6);
+  overflow: hidden;
+}
+.slide.active { display: flex; animation: pageIn .45s ease both; }
+
+@keyframes pageIn {
+  from { opacity: 0; transform: translateY(14px) scale(.985); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* Faint parchment fiber + burnt-edge vignette */
+.slide::before {
+  content: "";
+  position: absolute; inset: 0;
+  pointer-events: none;
+  background:
+    repeating-linear-gradient(90deg, rgba(120,80,20,.035) 0 2px, transparent 2px 5px),
+    radial-gradient(130% 120% at 50% 50%, transparent 55%, rgba(70,40,10,.28) 100%);
+  border-radius: 10px;
+}
+/* Ornamental corner flourishes */
+.slide::after {
+  content: "";
+  position: absolute; inset: 18px;
+  border: 1px solid rgba(120,80,20,.35);
+  border-radius: 4px;
+  pointer-events: none;
+  -webkit-mask:
+    linear-gradient(#000 0 0) top left     / 46px 46px no-repeat,
+    linear-gradient(#000 0 0) top right    / 46px 46px no-repeat,
+    linear-gradient(#000 0 0) bottom left  / 46px 46px no-repeat,
+    linear-gradient(#000 0 0) bottom right / 46px 46px no-repeat;
+          mask:
+    linear-gradient(#000 0 0) top left     / 46px 46px no-repeat,
+    linear-gradient(#000 0 0) top right    / 46px 46px no-repeat,
+    linear-gradient(#000 0 0) bottom left  / 46px 46px no-repeat,
+    linear-gradient(#000 0 0) bottom right / 46px 46px no-repeat;
+}
+
+.slide > * { position: relative; z-index: 1; }
+
+/* ---- Typography ---- */
+h1, h2, h3 { font-family: var(--serif-display); font-weight: 700; line-height: 1.08; margin: 0 0 .35em; }
+h1 { font-size: 60px; letter-spacing: .5px; }
+h2 { font-size: 42px; }
+h3 { font-size: 28px; color: #6a4a1c; }
+p, li { font-size: 25px; line-height: 1.5; }
+strong { color: #7a1f0c; }
+em { color: #6a4a1c; }
+
+.eyebrow {
+  font-family: var(--serif-display);
+  text-transform: uppercase;
+  letter-spacing: 4px;
+  font-size: 18px;
+  color: var(--ember);
+  margin-bottom: 10px;
+}
+.act-tag {
+  display: inline-block;
+  font-family: var(--serif-display);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  font-size: 15px;
+  color: var(--parchment);
+  background: linear-gradient(180deg, var(--ember), #7c2f14);
+  padding: 5px 16px;
+  border-radius: 3px;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.25);
+}
+
+ul, ol { margin: .2em 0; padding-left: 1.1em; }
+li { margin: .32em 0; }
+li::marker { color: var(--gold); }
+
+/* Checklist: a hand-drawn check as the bullet, in our own palette
+   (not the green-and-white ✅ emoji). Aligns text with a hanging indent. */
+.checklist { list-style: none; padding-left: 0; }
+.checklist li { position: relative; padding-left: 1.7em; margin: .5em 0; }
+.checklist li::before {
+  content: "\2713";              /* ✓ U+2713 */
+  position: absolute; left: 0; top: -0.02em;
+  color: var(--moss);
+  font-weight: 700;
+  font-size: 1.05em;
+}
+
+code, .mono { font-family: var(--mono); font-size: .82em; }
+:not(pre) > code {
+  background: rgba(43,29,16,.10);
+  border: 1px solid rgba(120,80,20,.3);
+  border-radius: 4px;
+  padding: 1px 6px;
+  color: #5a3a12;
+}
+
+pre {
+  font-family: var(--mono);
+  font-size: 19px;
+  line-height: 1.5;
+  background: #1b140a;
+  color: #e8dcc0;
+  border: 1px solid rgba(201,150,44,.5);
+  border-left: 5px solid var(--gold);
+  border-radius: 8px;
+  padding: 18px 22px;
+  margin: .5em 0;
+  overflow: auto;
+  box-shadow: inset 0 2px 18px rgba(0,0,0,.5);
+}
+pre .k { color: #d98c5f; }   /* keyword   */
+pre .s { color: #b6c98a; }   /* string    */
+pre .c { color: #8a7a5c; font-style: italic; }  /* comment */
+pre .f { color: #e6b85a; }   /* func/name */
+
+/* ---- Layout helpers ---- */
+.center { text-align: center; align-items: center; }
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 34px; align-items: start; }
+.muted { color: #6a4a1c; }
+.small { font-size: 20px; }
+.lead  { font-size: 30px; line-height: 1.45; }
+
+/* ---- Realm cards (IRIS / AETHER / AEGIS) ---- */
+.realms { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; margin-top: 18px; }
+.realm {
+  border-radius: 10px;
+  padding: 22px 20px;
+  color: #f4ecd8;
+  box-shadow: 0 10px 26px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.15);
+  min-height: 232px;
+}
+.realm h3 { color: #fff; margin-bottom: .15em; }
+.realm .tt { font-size: 15px; letter-spacing: 2px; text-transform: uppercase; opacity: .8; }
+.realm p { font-size: 19px; line-height: 1.4; }
+/* Emphasis must stay light on the dark realm cards (the global dark-red
+   strong/em would fail contrast against brown/purple/steel backgrounds). */
+.realm strong { color: #f6dfa1; }
+.realm em { color: #ecd8ab; }
+.realm.iris   { background: linear-gradient(160deg, #7a5a1e, #4a3410); }
+.realm.aether { background: linear-gradient(160deg, #5a3f86, #38265a); }
+.realm.aegis  { background: linear-gradient(160deg, #3d5a68, #243944); }
+
+/* ---- Interactive: Skill Check (predict, then reveal) ---- */
+.skill-check {
+  border: 2px dashed var(--gold);
+  border-radius: 10px;
+  padding: 20px 24px;
+  background: rgba(201,150,44,.08);
+  margin-top: 10px;
+}
+.skill-check .prompt { font-family: var(--serif-display); font-size: 26px; color: #6a3a10; }
+.reveal-btn {
+  font-family: var(--serif-display);
+  font-size: 20px;
+  letter-spacing: 1px;
+  color: #2b1d10;
+  background: linear-gradient(180deg, var(--gold-bright), var(--gold));
+  border: 1px solid #8a6414;
+  border-radius: 6px;
+  padding: 9px 20px;
+  cursor: pointer;
+  box-shadow: 0 3px 0 #8a6414, inset 0 1px 0 rgba(255,255,255,.5);
+  transition: transform .08s ease;
+  margin-top: 12px;
+}
+.reveal-btn:hover { transform: translateY(-1px); }
+.reveal-btn:active { transform: translateY(2px); box-shadow: 0 1px 0 #8a6414; }
+.answer { display: none; margin-top: 14px; animation: pageIn .35s ease both; }
+.answer.shown { display: block; }
+.answer .tag {
+  display: inline-block; font-family: var(--serif-display); letter-spacing: 1px;
+  background: var(--moss); color: #fff; padding: 2px 12px; border-radius: 4px; font-size: 17px;
+}
+
+/* ---- Fragments (step-by-step reveal by arrow key) ---- */
+.fragment { opacity: 0; transition: opacity .3s ease, transform .3s ease; transform: translateY(6px); }
+.fragment.visible { opacity: 1; transform: none; }
+
+/* ---- Loot / callout box ---- */
+.loot {
+  border: 1px solid var(--gold);
+  border-radius: 10px;
+  background: linear-gradient(180deg, rgba(201,150,44,.14), rgba(201,150,44,.05));
+  padding: 16px 22px;
+  margin-top: 14px;
+}
+.loot .label {
+  font-family: var(--serif-display); text-transform: uppercase; letter-spacing: 2px;
+  font-size: 15px; color: var(--ember);
+}
+
+/* ---- Chrome: progress bar, footer, dots ---- */
+#torchbar {
+  position: fixed; left: 0; top: 0; height: 4px; z-index: 50;
+  background: linear-gradient(90deg, var(--ember), var(--gold-bright));
+  box-shadow: 0 0 12px var(--gold-bright);
+  width: 0; transition: width .3s ease;
+}
+#footer {
+  position: fixed; bottom: 14px; left: 0; right: 0; z-index: 50;
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 0 22px; color: rgba(242,227,196,.55);
+  font-family: var(--serif-display); letter-spacing: 1px; font-size: 14px;
+  pointer-events: none;
+}
+#footer .quest-name { color: var(--gold-bright); }
+#dots { display: flex; gap: 7px; }
+.dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(242,227,196,.25); }
+.dot.on { background: var(--gold-bright); box-shadow: 0 0 8px var(--gold-bright); }
+
+/* ---- Title slide flourish ---- */
+.title-crest { font-size: 66px; margin-bottom: 6px; filter: drop-shadow(0 4px 10px rgba(0,0,0,.4)); }
+.title-slide h1 {
+  font-size: 76px;
+  background: linear-gradient(180deg, #7a1f0c, #b5471f);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.divider { width: 220px; height: 2px; margin: 18px auto; background: linear-gradient(90deg, transparent, var(--gold), transparent); }
+
+/* ---- Help overlay ---- */
+#help {
+  position: fixed; inset: 0; z-index: 80; display: none;
+  background: rgba(10,6,2,.86); color: #f2e3c4;
+  place-items: center; font-family: var(--serif-body);
+}
+#help.on { display: grid; }
+#help .card { background: var(--tavern-2); border: 1px solid var(--gold); border-radius: 12px; padding: 28px 40px; max-width: 520px; }
+#help kbd {
+  font-family: var(--mono); background: #000; border: 1px solid var(--gold);
+  border-radius: 4px; padding: 1px 8px; margin: 0 2px; color: var(--gold-bright);
+}
+
+@media (max-width: 900px) {
+  #footer .controls-hint { display: none; }
+}

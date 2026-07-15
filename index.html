@@ -1,0 +1,668 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>The bili-core Quest</title>
+  <link rel="stylesheet" href="assets/theme.css" />
+</head>
+<body>
+<div id="torchbar"></div>
+
+<div id="stage">
+<div id="deck">
+
+<!-- ============================ ACT 0 ============================ -->
+
+<!-- 1. Title -->
+<section class="slide title-slide center">
+  <div class="title-crest">&#9876;&#65039;&#128220;&#9876;&#65039;</div>
+  <div class="eyebrow">A Workshop Campaign for Brave Developers</div>
+  <h1>The bili&#8209;core Quest</h1>
+  <div class="divider"></div>
+  <p class="lead">Journey into the open&#8209;source library that powers the Sustainability&nbsp;Hub,<br/>and return ready to forge a chatbot of your very own.</p>
+  <p class="small muted">Press <strong>&rarr;</strong> or <strong>Space</strong> to travel onward &nbsp;&bull;&nbsp; Press <strong>?</strong> for the map of controls</p>
+</section>
+
+<!-- 2. The campaign map -->
+<section class="slide">
+  <div class="act-tag">The Campaign Ahead</div>
+  <h2>Five acts, one journey</h2>
+  <div class="two-col">
+    <ul>
+      <li class="fragment"><strong>Act I: The Map.</strong> The lay of the land: folders and provisions (dependencies).</li>
+      <li class="fragment"><strong>Act II: The Three Realms.</strong> IRIS, AETHER, and AEGIS.</li>
+      <li class="fragment"><strong>Act III: Provisions.</strong> What you need to actually run it.</li>
+    </ul>
+    <ul>
+      <li class="fragment"><strong>Act IV: The Kingdom.</strong> How the Hub is built on bili&#8209;core.</li>
+      <li class="fragment"><strong>Act V: Your Own Quest.</strong> Fork it and build your own chatbot.</li>
+      <li class="fragment loot"><span class="label">&#127942; Your reward</span> A take&#8209;home quest scroll so you can build one solo, no pressure, no live&#8209;coding today.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- 3. Who is bili-core -->
+<section class="slide">
+  <div class="act-tag">The Quest Giver</div>
+  <h2>What is bili&#8209;core?</h2>
+  <p class="lead">An <strong>open&#8209;source shared library</strong> for building AI agents (chatbots that can reason, call tools, and remember conversations).</p>
+  <ul>
+    <li class="fragment">Built and maintained here at <em>MSU Denver</em>. You can read every line.</li>
+    <li class="fragment">Standing on the shoulders of <strong>LangChain</strong> and <strong>LangGraph</strong> (industry tools for wiring up LLM apps).</li>
+    <li class="fragment">It's a <strong>Python library</strong> organized into three big <strong>subsystems</strong> (Python <em>packages</em>), the three <em>realms</em> we're about to explore.</li>
+  </ul>
+</section>
+
+<!-- 4. Why a shared library -->
+<section class="slide">
+  <div class="act-tag">The Quest Giver</div>
+  <h2>Why a <em>shared</em> library?</h2>
+  <div class="two-col">
+    <div>
+      <p>One library, many kingdoms. bili&#8209;core holds the pieces <strong>every</strong> AI app needs, so no team rewrites them.</p>
+      <p class="fragment">The <strong>Sustainability Hub</strong> is one kingdom built on it. So is your future chatbot.</p>
+      <div class="fragment loot"><span class="label">The rule of the land</span> Fix a bug in the library and <em>every</em> kingdom gets the fix. Great power, great responsibility.</div>
+    </div>
+    <div class="fragment">
+<pre><span class="c"># the shape of the world</span>
+        <span class="f">bili-core</span>   <span class="c">(the shared library)</span>
+        &#9585;   |   &#9586;
+   <span class="f">Hub</span>   <span class="f">Yours</span>   <span class="f">...others</span>
+</pre>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ ACT I ============================ -->
+
+<!-- 5. The map / folder structure -->
+<section class="slide">
+  <div class="act-tag">Act I &bull; The Map</div>
+  <h2>The lay of the land</h2>
+  <div class="two-col">
+<pre><span class="f">bili/</span>
+&#9500; <span class="f">iris/</span>          <span class="c"># single-agent realm</span>
+&#9500; <span class="f">aether/</span>        <span class="c"># multi-agent realm</span>
+&#9500; <span class="f">aegis/</span>         <span class="c"># security realm</span>
+&#9500; <span class="f">auth/</span>          <span class="c"># who are you?</span>
+&#9500; <span class="f">utils/</span>         <span class="c"># shared tools + State</span>
+&#9500; <span class="f">prompts/</span>       <span class="c"># prompt templates (JSON)</span>
+&#9500; <span class="f">flask_api/</span>     <span class="c"># REST helpers</span>
+&#9500; <span class="f">streamlit_ui/</span>  <span class="c"># prebuilt UI</span>
+&#9492; <span class="f">*_app.py</span>       <span class="c"># entry points</span>
+</pre>
+    <div>
+      <p>Three <strong>realms</strong> do the AI work; the rest is shared support (auth, utilities, prompts, interfaces).</p>
+      <p class="fragment">The <code>State</code> that every conversation carries lives in <code>bili/utils/langgraph_utils.py</code>. Hold that thought, we return to it.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 7. Dependencies -->
+<section class="slide">
+  <div class="act-tag">Act I &bull; The Map</div>
+  <h2>Your provisions (dependencies)</h2>
+  <div class="two-col">
+    <ul>
+      <li><strong>LangChain 1.0 + LangGraph 1.0</strong>: the backbone for wiring LLM steps together.</li>
+      <li class="fragment"><strong>Provider SDKs</strong>: OpenAI, Azure, Google Vertex, AWS Bedrock, Hugging Face, local models.</li>
+      <li class="fragment"><strong>Databases</strong>: Postgres &amp; Mongo drivers, to remember conversations.</li>
+    </ul>
+    <div>
+      <div class="fragment loot"><span class="label">Heavy armor, optional</span> <code>torch</code> and <code>tensorflow</code> ship too, but you only wield them for <em>local</em> models. Use a hosted provider and they just sit in your pack.</div>
+      <p class="fragment small muted">All declared in <code>requirements.txt</code>. Installed with a plain <code>pip install .</code></p>
+    </div>
+  </div>
+</section>
+
+<!-- 8. LangGraph in one slide -->
+<section class="slide">
+  <div class="act-tag">Act I &bull; A Word on Magic</div>
+  <h2>LangGraph, in one breath</h2>
+  <p class="lead">If you've met a <em>state machine</em> or a <em>flowchart</em> in class, you already understand this.</p>
+  <div class="two-col">
+    <ul>
+      <li class="fragment"><strong>Node</strong>: one step that does a job (add a persona, call the model, save a title).</li>
+      <li class="fragment"><strong>Edge</strong>: an arrow from one step to the next.</li>
+      <li class="fragment"><strong>State</strong>: a bag of data (the messages, a summary, the title) passed along and updated at each node.</li>
+    </ul>
+    <div class="fragment">
+<pre><span class="f">START</span>
+  &rarr; add_persona
+  &rarr; call_the_model
+  &rarr; save_the_title
+<span class="f">END</span>
+</pre>
+      <p class="small muted">bili&#8209;core's whole job is building and running these graphs for you.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ ACT II ============================ -->
+
+<!-- 9. Three realms overview -->
+<section class="slide center">
+  <div class="act-tag">Act II &bull; The Three Realms</div>
+  <h2>Meet the three realms</h2>
+  <p class="small muted" style="margin-top:-6px">Each &ldquo;realm&rdquo; is really a <strong>subsystem</strong>, a self&#8209;contained Python package inside the library.</p>
+  <div class="realms">
+    <div class="realm iris">
+      <div class="tt">Realm I</div>
+      <h3>IRIS</h3>
+      <p><strong>One</strong> agent, done well. The single chatbot: model + tools + memory.</p>
+    </div>
+    <div class="realm aether">
+      <div class="tt">Realm II</div>
+      <h3>AETHER</h3>
+      <p><strong>Many</strong> agents, working together. A team of specialists from a YAML recipe.</p>
+    </div>
+    <div class="realm aegis">
+      <div class="tt">Realm III</div>
+      <h3>AEGIS</h3>
+      <p><strong>Attacking</strong> the team, on purpose. Security testing for multi&#8209;agent systems.</p>
+    </div>
+  </div>
+  <p class="fragment small muted" style="margin-top:20px">The Hub you'll see in Act IV lives entirely in the first realm. The other two are the frontier.</p>
+</section>
+
+<!-- 10. IRIS intro -->
+<section class="slide">
+  <div class="act-tag">Realm I &bull; IRIS</div>
+  <h2>IRIS: the single agent</h2>
+  <p class="small muted">Interactive Reasoning and Integration Services</p>
+  <p class="lead">Give it a <strong>model</strong>, some <strong>tools</strong>, and a <strong>memory</strong>, and it runs a conversation. This is the realm your take&#8209;home quest lives in.</p>
+  <ul>
+    <li class="fragment"><strong>60+ models</strong> across 6 providers, chosen by a single string.</li>
+    <li class="fragment">A tidy pipeline of nodes handles persona, reasoning, memory, and cleanup.</li>
+    <li class="fragment">Conversations persist automatically, so users can come back tomorrow.</li>
+  </ul>
+</section>
+
+<!-- 11. IRIS flow -->
+<section class="slide">
+  <div class="act-tag">Realm I &bull; IRIS</div>
+  <h2>Four steps to a living chatbot</h2>
+<pre><span class="c"># 1. choose a brain</span>
+model = <span class="f">load_model</span>(model_type=<span class="s">"remote_openai"</span>, model_name=<span class="s">"gpt-4o-mini"</span>)
+
+<span class="c"># 2. hand it some tools (or none)</span>
+tools = <span class="f">initialize_tools</span>(active_tools=[], tool_prompts={})
+
+<span class="c"># 3. assemble the graph (memory is automatic)</span>
+agent = <span class="f">build_agent_graph</span>(node_kwargs={<span class="s">"llm_model"</span>: model, <span class="s">"tools"</span>: tools, ...})
+
+<span class="c"># 4. speak to it</span>
+<span class="f">invoke_agent</span>(agent, <span class="s">"Hello, who are you?"</span>, thread_id=<span class="s">"user1"</span>)
+</pre>
+  <p class="fragment small muted">That's the entire skeleton. Everything else is decoration.</p>
+</section>
+
+<!-- 12. IRIS node pipeline -->
+<section class="slide">
+  <div class="act-tag">Realm I &bull; IRIS</div>
+  <h2>What happens inside <code>invoke</code></h2>
+  <p>Your message walks a line of nodes, each doing one small job:</p>
+<pre><span class="f">START</span>
+ &rarr; add_persona_and_summary   <span class="c"># who am I + what happened so far</span>
+ &rarr; inject_current_datetime    <span class="c"># what time is it now</span>
+ &rarr; react_agent               <span class="c"># &#11088; the actual thinking + tool use</span>
+ &rarr; update_timestamp           <span class="c"># bookkeeping</span>
+ &rarr; trim_summarize             <span class="c"># keep memory from overflowing</span>
+ &rarr; normalize_state            <span class="c"># tidy up</span>
+<span class="f">END</span>
+</pre>
+  <p class="fragment small muted">Remember this whole pipeline (the full START&rarr;END line&#8209;up). In Act IV, the Hub splices <em>its own</em> nodes right into it.</p>
+</section>
+
+<!-- 13. IRIS State -->
+<section class="slide">
+  <div class="act-tag">Realm I &bull; IRIS</div>
+  <h2>The <code>State</code>: the party's shared pack</h2>
+  <div class="two-col">
+    <div>
+      <p>Every node reads from and writes to one shared object. It carries:</p>
+      <ul class="small">
+        <li><code>messages</code>: the conversation</li>
+        <li><code>summary</code>: the running recap</li>
+        <li><code>owner</code>: whose chat this is</li>
+        <li><code>title</code>, <code>tags</code>: metadata</li>
+        <li>timestamps, <code>llm_config</code>, and more</li>
+      </ul>
+    </div>
+    <div class="fragment loot"><span class="label">Why it matters</span>
+      <p>Nodes never pass arguments to each other directly. They just update the shared <code>State</code>, and the next node sees it. <strong>Additive updates</strong>: a node returns only the fields it changed.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 13b. IRIS: the Streamlit experimentation app -->
+<section class="slide">
+  <div class="act-tag">Realm I &bull; IRIS</div>
+  <h2>Try it with no code: the Streamlit app</h2>
+  <p>bili&#8209;core ships a ready&#8209;made <strong>Streamlit</strong> chat app (port 8501). It puts an IRIS agent behind a friendly web page, so you can experiment without writing a single line.</p>
+  <div class="two-col">
+    <ul class="small">
+      <li>Pick and configure any of the <strong>60+ models</strong> from a menu.</li>
+      <li><strong>Swap the model mid&#8209;conversation</strong>, then watch how the same chat behaves on a different LLM.</li>
+      <li>A lovely way to feel how model behavior adapts.</li>
+    </ul>
+    <div class="loot"><span class="label">&#128220; A bit of Hub history</span>
+      <p>This was the <em>original</em> app the team built, to figure out which LLM was best suited for the Sustainability Hub.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 14. SKILL CHECK 2: predict the import -->
+<section class="slide">
+  <div class="act-tag">&#127922; Skill Check &bull; Arcana</div>
+  <h2>Name that realm</h2>
+  <p class="lead">A spellbook opens to this import. Which realm does it summon from?</p>
+<pre>from bili.<span style="color:#e6b85a">?????</span>.loaders.langchain_loader import build_agent_graph</pre>
+  <div class="skill-check no-advance">
+    <div class="prompt">&#128302; iris, aether, or aegis?</div>
+    <button class="reveal-btn" data-reveal="ans-import">Roll for Arcana &#127922;</button>
+    <div class="answer" id="ans-import">
+      <span class="tag">iris</span>
+      <p><code>build_agent_graph</code> assembles a <em>single</em> agent's pipeline, so it comes from <code>bili.iris.loaders</code>. This is exactly the import the Hub uses to build its chatbot.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 15. AETHER intro -->
+<section class="slide">
+  <div class="act-tag">Realm II &bull; AETHER</div>
+  <h2>AETHER: a party of agents</h2>
+  <p class="small muted">Agent Ecosystems for Testing, Hardening, Evaluation, and Research</p>
+  <p class="lead">Where IRIS is one adventurer, AETHER is a <strong>whole party</strong>: several agents, each its own, working together. You decide who's in the party and what each one does.</p>
+  <p class="small muted">The roles are free&#8209;form and up to you. A moderation team <em>might</em> be a Judge, a Reviewer, and a Policy Expert, but a research team or a code&#8209;review team would look completely different.</p>
+  <ul>
+    <li class="fragment">You describe the team in a <strong>YAML file</strong>. No graph code required.</li>
+    <li class="fragment">AETHER <em>compiles</em> that recipe into a runnable LangGraph workflow.</li>
+    <li class="fragment">Every agent can have its own model, tools, and personality.</li>
+  </ul>
+</section>
+
+<!-- 16. AETHER five-step -->
+<section class="slide">
+  <div class="act-tag">Realm II &bull; AETHER</div>
+  <h2>From recipe to running team</h2>
+<pre><span class="f">Define</span>  &rarr;  <span class="f">Configure</span>  &rarr;  <span class="f">Validate</span>  &rarr;  <span class="f">Compile</span>  &rarr;  <span class="f">Execute</span>
+</pre>
+  <div class="two-col">
+    <div class="fragment">
+      <p class="small">In code, that's a clean straight line:</p>
+<pre class="small">config   = <span class="f">load_mas_from_yaml</span>(<span class="s">"team.yaml"</span>)
+compiled = <span class="f">compile_mas</span>(config)   <span class="c"># checks first!</span>
+result   = <span class="f">execute_mas</span>(config, {...})
+</pre>
+    </div>
+    <div class="fragment loot"><span class="label">A kind guardrail</span>
+      <p><strong>Validate</strong> runs 13 safety checks before anything executes (orphaned agents, dead ends, cycles). Errors stop the build; warnings just advise. It fails <em>early</em>, not mid&#8209;conversation.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 17. AETHER topologies -->
+<section class="slide">
+  <div class="act-tag">Realm II &bull; AETHER</div>
+  <h2>Choose your party's formation</h2>
+  <p>One field, <code>workflow_type</code>, picks how the agents are wired:</p>
+  <div class="two-col">
+    <ul class="small">
+      <li><strong>sequential</strong>: a relay line, one after another</li>
+      <li><strong>supervisor</strong>: a boss routes work to specialists</li>
+      <li><strong>consensus</strong>: peers vote until they agree</li>
+    </ul>
+    <ul class="small">
+      <li><strong>hierarchical</strong>: tiers that escalate upward</li>
+      <li><strong>parallel</strong>: everyone at once, then merge</li>
+      <li><strong>custom</strong>: your own conditional arrows</li>
+    </ul>
+  </div>
+  <div class="fragment loot"><span class="label">Nice touch</span> A single AETHER agent that also has tools is built the <em>same way</em> as an IRIS agent. AETHER stands on IRIS's shoulders.</div>
+</section>
+
+<!-- 18. AETHER concrete example -->
+<section class="slide">
+  <div class="act-tag">Realm II &bull; AETHER</div>
+  <h2>A real recipe: content moderation</h2>
+  <div class="two-col">
+<pre class="small">workflow_type: <span class="s">supervisor</span>
+entry_point: <span class="s">judge</span>
+agents:
+  - agent_id: <span class="s">judge</span>          <span class="c"># the boss</span>
+    is_supervisor: <span class="s">true</span>
+  - agent_id: <span class="s">content_reviewer</span>
+  - agent_id: <span class="s">policy_expert</span>
+  - agent_id: <span class="s">appeals_specialist</span>
+</pre>
+    <div>
+      <p>A flagged post arrives at the <strong>Judge</strong>, who calls specialists as needed and synthesizes a final verdict.</p>
+      <p class="fragment small muted">This exact file ships in the repo as <code>supervisor_moderation.yaml</code>. It's the very system a student is exploring for the Hub's own moderation someday.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 19. AEGIS intro -->
+<section class="slide">
+  <div class="act-tag">Realm III &bull; AEGIS</div>
+  <h2>AEGIS: the loyal adversary</h2>
+  <p class="small muted">Adversarial Evaluation and Guarding of Intelligent Systems</p>
+  <p class="lead">If AETHER <strong>builds</strong> the multi&#8209;agent machine, AEGIS <strong>attacks</strong> it on purpose, and measures what breaks.</p>
+  <ul>
+    <li class="fragment">Injects adversarial payloads (prompt injection, memory poisoning, impersonation&hellip;).</li>
+    <li class="fragment">Tracks how an attack <em>propagates</em> from one agent to the next.</li>
+    <li class="fragment">Built by MSU Denver's Cybersecurity Research group. This is real security research.</li>
+  </ul>
+</section>
+
+<!-- 20. AEGIS three tiers -->
+<section class="slide">
+  <div class="act-tag">Realm III &bull; AEGIS</div>
+  <h2>Three tiers of &ldquo;did it work?&rdquo;</h2>
+  <div class="realms">
+    <div class="realm aegis">
+      <div class="tt">Tier 1</div>
+      <h3>Structural</h3>
+      <p>Did the attack even <em>run</em> without crashing the framework? Free, always on.</p>
+    </div>
+    <div class="realm aegis">
+      <div class="tt">Tier 2</div>
+      <h3>Heuristic</h3>
+      <p>Does the output <em>look</em> influenced? Fast string checks. A useful proxy.</p>
+    </div>
+    <div class="realm aegis">
+      <div class="tt">Tier 3</div>
+      <h3>Semantic</h3>
+      <p>An independent <strong>LLM judge</strong> confirms it. The real verdict.</p>
+    </div>
+  </div>
+  <div class="fragment loot"><span class="label">The research gem</span> The gap between Tier 2 (&ldquo;looks bad&rdquo;) and Tier 3 (&ldquo;is bad&rdquo;) is itself a finding worth studying.</div>
+</section>
+
+<!-- 21. One stack -->
+<section class="slide center">
+  <div class="act-tag">Act II &bull; The Realms United</div>
+  <h2>One stack, three floors</h2>
+<pre>        <span class="f">AEGIS</span>    <span class="c"># attacks and measures the team</span>
+          &darr;  builds on
+        <span class="f">AETHER</span>   <span class="c"># orchestrates a team of agents</span>
+          &darr;  builds on
+        <span class="f">IRIS</span>     <span class="c"># runs a single agent well</span>
+</pre>
+  <p class="fragment lead">Learn IRIS and you've learned the foundation the other two stand on.</p>
+</section>
+
+<!-- ============================ ACT III ============================ -->
+
+<!-- Act III opener: History skill check (post-break recall) -->
+<section class="slide">
+  <div class="act-tag">&#127922; Skill Check &bull; History</div>
+  <h2>Welcome back, a quick recall</h2>
+  <p class="lead">Right before the break, we walked the IRIS node pipeline. Of all its steps, which <em>single</em> node actually calls the model to reason and use tools?</p>
+  <div class="skill-check no-advance">
+    <div class="prompt">&#128302; Name the node that does the thinking.</div>
+    <button class="reveal-btn" data-reveal="ans-history">Roll for History &#127922;</button>
+    <div class="answer" id="ans-history">
+      <span class="tag">react_agent</span>
+      <p><code>react_agent</code> is the star, the only node that talks to the LLM and decides when to reach for a tool. Every other node just preps the input or tidies the output. Keep it in mind: in Act IV you'll watch the Hub splice its own nodes right around it.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 22. What you need to run -->
+<section class="slide">
+  <div class="act-tag">Act III &bull; Provisions</div>
+  <h2>What does it take to run?</h2>
+  <p class="lead">Less than you'd fear.</p>
+  <ul>
+    <li class="fragment"><strong>One</strong> provider key is enough. An <code>OPENAI_API_KEY</code> gets you going.</li>
+    <li class="fragment"><strong>No database required.</strong> With no DB configured, memory falls back to in&#8209;process storage automatically.</li>
+    <li class="fragment">Add Postgres or Mongo later only when you want conversations to survive a restart.</li>
+  </ul>
+  <div class="fragment loot"><span class="label">Checkpointer priority</span> Postgres &rarr; Mongo &rarr; in&#8209;memory. It picks the best one you've configured, with a safe fallback.</div>
+</section>
+
+<!-- 23. Install -->
+<section class="slide">
+  <div class="act-tag">Act III &bull; Provisions</div>
+  <h2>Two ways to carry the library</h2>
+  <div class="two-col">
+    <div>
+      <h3>Use it</h3>
+<pre class="small">pip install \
+  git+https://github.com/\
+  msu-denver/bili-core.git@v5.3.1</pre>
+      <p class="small muted">Pin a version. Your app just depends on it.</p>
+    </div>
+    <div class="fragment">
+      <h3>Hack on it</h3>
+<pre class="small">pip install -e ../bili-core</pre>
+      <p class="small muted"><strong>Editable mode.</strong> Your edits to the library are live immediately, which is how the Hub team develops both at once.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ ACT IV ============================ -->
+
+<!-- 24. The Hub -->
+<section class="slide">
+  <div class="act-tag">Act IV &bull; The Kingdom of the Hub</div>
+  <h2>A real kingdom on the library</h2>
+  <p class="lead">The <strong>Sustainability Hub Engine</strong> is a full application built on bili&#8209;core. Let's see exactly how it turns the library into a running product.</p>
+  <ul>
+    <li class="fragment">It <em>uses</em> bili&#8209;core's pieces&hellip;</li>
+    <li class="fragment">&hellip;and <em>extends</em> them with its own, without ever forking the library.</li>
+  </ul>
+</section>
+
+<!-- 25. SKILL CHECK 3: which realms -->
+<section class="slide">
+  <div class="act-tag">&#127922; Skill Check &bull; Insight</div>
+  <h2>Which realms does the Hub visit?</h2>
+  <p class="lead">The Hub is a chatbot app. Of our three realms (IRIS, AETHER, AEGIS), which does it actually import?</p>
+  <div class="skill-check no-advance">
+    <div class="prompt">&#128302; Take a guess before the reveal.</div>
+    <button class="reveal-btn" data-reveal="ans-realms">Roll for Insight &#127922;</button>
+    <div class="answer" id="ans-realms">
+      <span class="tag">Only IRIS</span>
+      <p>The Hub touches <code>iris</code>, <code>auth</code>, and <code>utils</code>, and <strong>zero</strong> lines of aether or aegis. A single, well&#8209;built agent is all a production chatbot needs. The frontier realms are there when research calls for them.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 26. Extend vs modify -->
+<section class="slide">
+  <div class="act-tag">Act IV &bull; The Kingdom</div>
+  <h2>The golden rule: extend, don't modify</h2>
+  <div class="two-col">
+    <div class="loot"><span class="label">The library owns the data</span>
+      <p>The <code>title</code> and <code>tags</code> <em>fields</em> live on bili&#8209;core's shared <code>State</code>, because every app might want them.</p>
+    </div>
+    <div class="fragment loot"><span class="label">The app owns the behavior</span>
+      <p>But <em>how</em> the Hub computes a title or tags is its own business, so that logic lives in the Hub, as custom nodes.</p>
+    </div>
+  </div>
+  <p class="fragment lead" style="margin-top:18px">Generic data in the library. Specific behavior in the app. That one idea explains the whole design.</p>
+</section>
+
+<!-- 27. Custom nodes + splice -->
+<section class="slide">
+  <div class="act-tag">Act IV &bull; The Kingdom</div>
+  <h2>The Hub adds two nodes of its own</h2>
+  <div class="two-col">
+    <div>
+      <ul class="small">
+        <li><strong>compute_title</strong>: names the chat from the first message (once).</li>
+        <li><strong>update_tags</strong>: pulls topic tags every few messages.</li>
+      </ul>
+      <p class="fragment small">It <strong>copies</strong> bili&#8209;core's default pipeline and <strong>splices</strong> these in, never mutating the shared original.</p>
+    </div>
+    <div class="fragment">
+<pre class="small"><span class="c"># the whole extension trick</span>
+compute_title_node = <span class="f">partial</span>(
+    Node, <span class="s">"compute_title"</span>,
+    build_compute_title_node)
+</pre>
+      <p class="small muted">A custom node is just bili&#8209;core's own <code>Node</code> with the app's function inside.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 28. Assembled graph -->
+<section class="slide">
+  <div class="act-tag">Act IV &bull; The Kingdom</div>
+  <h2>The Hub's assembled pipeline</h2>
+  <p class="small">Same IRIS backbone, with two Hub nodes woven in (&#11088;):</p>
+<pre>START
+ &rarr; add_persona_and_summary
+ &rarr; inject_current_datetime
+ &rarr; <span class="f">compute_title</span>       <span class="c"># &#11088; Hub</span>
+ &rarr; react_agent
+ &rarr; update_timestamp
+ &rarr; <span class="f">update_tags</span>         <span class="c"># &#11088; Hub</span>
+ &rarr; trim_summarize
+ &rarr; normalize_state
+END
+</pre>
+  <p class="fragment small muted">Merged registry: <code>{**GRAPH_NODE_REGISTRY, **ENGINE_NODE_REGISTRY}</code>. Library nodes &cup; Hub nodes.</p>
+</section>
+
+<!-- 28b. The Hub's own tools + RAG -->
+<section class="slide">
+  <div class="act-tag">Act IV &bull; The Kingdom</div>
+  <h2>The Hub brings its own tools, too</h2>
+  <p>The Hub extends bili&#8209;core two ways: custom <strong>nodes</strong> (which we just saw) <em>and</em> custom <strong>tools</strong>. Its star tool, <code>knowledge_search</code>, is a real&#8209;world piece of <strong>RAG</strong>.</p>
+  <div class="two-col">
+    <div class="loot"><span class="label">RAG, plainly</span>
+      <p>Retrieval&#8209;Augmented Generation: let the agent <em>look things up</em> in your documents before it answers, instead of guessing from memory alone.</p>
+    </div>
+    <div class="fragment">
+<pre class="small"><span class="c"># knowledge_search, in spirit</span>
+q     = embed(question)          <span class="c"># question &rarr; vector</span>
+docs  = opensearch.search(q)     <span class="c"># find relevant docs</span>
+answer = agent(question, docs)   <span class="c"># answer, grounded</span>
+</pre>
+    </div>
+  </div>
+  <p class="fragment small muted">IRIS gives you the agent; add a <em>retriever tool</em> like this and you've got RAG. The library ships the hooks (embeddings + retriever tools); the Hub supplies the documents.</p>
+</section>
+
+<!-- 29. Interfaces + lifecycle -->
+<section class="slide">
+  <div class="act-tag">Act IV &bull; The Kingdom</div>
+  <h2>Three gates into the kingdom</h2>
+  <div class="two-col">
+    <ul class="small">
+      <li><strong>Streamlit</strong> (8501): the quick UI, mostly bili&#8209;core's prebuilt pages.</li>
+      <li><strong>Flask</strong> (5001): REST API for auth and data.</li>
+      <li><strong>WebSocket</strong> (3500): the real&#8209;time chat, where the full agent is built.</li>
+    </ul>
+    <div class="fragment">
+      <p class="small">A WebSocket message, end to end:</p>
+      <ol class="small">
+        <li>Check the JWT + that the thread belongs to you</li>
+        <li><code>build_agent_graph(...)</code> with the spliced pipeline</li>
+        <li><code>agent.invoke(...)</code> runs the nodes</li>
+        <li>Checkpointer saves the conversation automatically</li>
+        <li>Reply streams back with title + tags</li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<!-- 30. Security aside -->
+<section class="slide">
+  <div class="act-tag">Act IV &bull; A Guard at the Gate</div>
+  <h2>One security idea worth stealing</h2>
+  <p class="lead">Every conversation's key is <code>{your_email}_{conversation_id}</code>.</p>
+  <ul>
+    <li class="fragment">Before loading any thread, the Hub checks it <strong>starts with your email</strong>.</li>
+    <li class="fragment">So you can never open someone else's chat by guessing an ID.</li>
+  </ul>
+  <div class="fragment loot"><span class="label">The takeaway</span> A tiny ownership check, enforced at the door, prevents a whole class of attacks. Good design is often this humble.</div>
+</section>
+
+<!-- ============================ ACT V ============================ -->
+
+<!-- 31. Choose your path -->
+<section class="slide">
+  <div class="act-tag">Act V &bull; Your Own Quest</div>
+  <h2>Choose your path</h2>
+  <p class="lead">The take&#8209;home scroll (<code>FORK-YOUR-OWN-CHATBOT.md</code>) branches. Where will you go?</p>
+  <div class="two-col">
+    <div class="loot"><span class="label">&#128220; Path of the Scribe</span>
+      <p>Build a plain chatbot with a personality of your choosing. The gentle path. Start here.</p>
+    </div>
+    <div class="loot"><span class="label">&#128295; Path of the Artificer</span>
+      <p>Give your bot a <em>tool</em> (weather, search) so it can act, not just talk.</p>
+    </div>
+  </div>
+  <p class="fragment small muted" style="margin-top:16px">Both begin from the same four&#8209;line skeleton you already met in Act II.</p>
+</section>
+
+<!-- 32. The quest code -->
+<section class="slide">
+  <div class="act-tag">Act V &bull; Your Own Quest</div>
+  <h2>Your first spell, in full</h2>
+<pre class="small">from bili.iris.loaders.llm_loader import load_model
+from bili.iris.loaders.tools_loader import initialize_tools
+from bili.iris.loaders.langchain_loader import build_agent_graph
+from bili.iris.loaders.streaming_utils import invoke_agent
+
+model = <span class="f">load_model</span>(model_type=<span class="s">"remote_openai"</span>, model_name=<span class="s">"gpt-4o-mini"</span>)
+tools = <span class="f">initialize_tools</span>(active_tools=[], tool_prompts={})
+agent = <span class="f">build_agent_graph</span>(node_kwargs={
+    <span class="s">"llm_model"</span>: model, <span class="s">"tools"</span>: tools,
+    <span class="s">"persona"</span>: <span class="s">"You are a wise tavern keeper."</span>,
+    <span class="s">"summarize_llm_model"</span>: model,
+})
+print(<span class="f">invoke_agent</span>(agent, <span class="s">"Greetings! What's on the menu?"</span>, thread_id=<span class="s">"hero1"</span>))
+</pre>
+  <p class="fragment small muted">The scroll walks you through every line, plus the one snag to watch for. One API key and you're off.</p>
+</section>
+
+<!-- 33. Recap / thanks -->
+<section class="slide center">
+  <div class="act-tag">&#127942; Quest Complete</div>
+  <h2>Experience earned</h2>
+  <div class="two-col" style="text-align:left">
+    <ul class="small checklist">
+      <li>You can read the bili&#8209;core map</li>
+      <li>You know the three realms</li>
+      <li>You've seen IRIS become a chatbot</li>
+    </ul>
+    <ul class="small checklist">
+      <li>You know how the Hub extends it</li>
+      <li>You hold a scroll to build your own</li>
+      <li>You know to <em>trust the code</em></li>
+    </ul>
+  </div>
+  <div class="divider"></div>
+  <p class="lead">Now go forth and fork it.</p>
+  <p class="small muted">Questions? Grab me anytime. The whole party is here to help. &#127775;</p>
+</section>
+
+</div><!-- /deck -->
+</div><!-- /stage -->
+
+<div id="footer">
+  <span class="quest-name">&#9876;&#65039; The bili-core Quest</span>
+  <span id="dots"></span>
+  <span><span class="controls-hint">? for help &bull; </span><span id="footIndex">1 / 35</span></span>
+</div>
+
+<div id="help">
+  <div class="card">
+    <h3>Traveler's Controls</h3>
+    <p><kbd>&rarr;</kbd> / <kbd>Space</kbd> next &bull; <kbd>&larr;</kbd> back</p>
+    <p><kbd>F</kbd> fullscreen &bull; <kbd>Home</kbd>/<kbd>End</kbd> jump to ends</p>
+    <p><kbd>?</kbd> this menu &bull; <kbd>Esc</kbd> close</p>
+    <p class="small muted">Click anywhere to advance.</p>
+  </div>
+</div>
+
+<script src="assets/deck.js"></script>
+</body>
+</html>
