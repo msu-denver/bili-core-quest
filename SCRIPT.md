@@ -123,6 +123,8 @@ It is iris! Because it builds a single agent's pipeline. And here is a lovely bi
 
 We cross now into the second realm, AETHER. Where IRIS is one adventurer, AETHER musters a whole party. Now, the important thing to know is that AETHER does not come with a fixed cast. You decide who is in your party and what each member does. To make it concrete, picture just one example, a moderation guild: a Judge, a Content Reviewer, a Policy Expert, each one its own agent with its own personality, all questing together. But that is only one shape. A research team, a customer support team, a code review team would each have completely different roles. AETHER is deliberately domain-agnostic, which is a fancy way of saying the roles are free-form and entirely up to you.
 
+And here is something worth pausing on. AETHER was built by one of our own students, Monica Ball, as her honors thesis research right here at MSU Denver, during her senior year. So this is not some distant framework handed down from a big company. It is the work of a student who sat exactly where you are sitting.
+
 The really clever part is how you describe that team. You do not write graph code. You write a YAML file, a plain text recipe, listing your agents and how they talk. AETHER then compiles that recipe into a runnable workflow. It is declarative, meaning you describe what you want and the framework figures out the wiring.
 
 ### Slide 16 - From recipe to running team
@@ -147,7 +149,7 @@ This is not a toy. This exact file, supervisor_moderation.yaml, is in the codeba
 
 The third realm, AEGIS, is the one I find the most thrilling of all. If AETHER musters the party, AEGIS is the loyal adversary who ambushes it on purpose and measures what breaks. It is a security testing tool.
 
-It does things like inject sneaky instructions into an agent (that is called prompt injection), or plant false memories, or impersonate one agent to fool another. Then it tracks how that attack spreads from one agent to the next. This was built by our own Cybersecurity Research group here at MSU Denver, so when I say this is real security research, I mean students exactly like you built it.
+It does things like inject sneaky instructions into an agent (that is called prompt injection), or plant false memories, or impersonate one agent to fool another. Then it tracks how that attack spreads from one agent to the next. And here is the wonderful part: AEGIS, along with AETHER, is the honors thesis research of that same student, Monica Ball, done right here at MSU Denver during her senior year. So when I say this is real security research, I mean it quite literally. A student exactly like you built the whole thing.
 
 ### Slide 20 - Three tiers of "did it work?"
 
